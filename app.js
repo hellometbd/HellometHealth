@@ -108,7 +108,7 @@ app.get('/get',function(req, res){
 
 const PORT = process.env.PORT || 1010;
 
-app.listen(1010, function(error){
+app.listen(PORT, function(error){
     if(error){
         console.log(error);
     }else{
