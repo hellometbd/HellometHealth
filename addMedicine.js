@@ -12,7 +12,7 @@ path = require('path');
 var fs = require('fs');
 
 var MongoClient = require('mongodb').MongoClient;
-var URL = "mongodb://127.0.0.1:27017/";
+var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.mongodb.net?retryWrites=true&w=majority";
 var config = { useUnifiedTopology: true };
 
 storage = multer.diskStorage({
@@ -38,7 +38,7 @@ router.post("/uploadImageToGenarateUrl",
 
 router.post("/addMedicine", function (req, res) {
 
-    MongoClient.connect(URL, config, function (error, Client) {
+    MongoClient.connect(connectionUrl, config, function (error, Client) {
         if (error) {
             console.log(error);
             
