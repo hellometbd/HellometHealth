@@ -11,11 +11,11 @@ app.use("/medicine", addMedicine);
 
 var MongoClient = require('mongodb').MongoClient;
 var config = { useUnifiedTopology: true };
-var URL = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.mongodb.net?retryWrites=true&w=majority";
+var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.mongodb.net?retryWrites=true&w=majority";
 
 app.post('/addPharmacy', function(req, res){
 
-    MongoClient.connect(URL,config, function(error, Client){
+    MongoClient.connect(connectionUrl,config, function(error, Client){
         if(error){
             console.log(error);
             res.json({ message: "Connection Failed" });
@@ -52,7 +52,7 @@ app.post('/addPharmacy', function(req, res){
 
 app.get('/getPharmacies', function(req, res){
 
-    MongoClient.connect(URL, config, function(error, Client){
+    MongoClient.connect(connectionUrl, config, function(error, Client){
         if(error){
             console.log(error);
         }else{
