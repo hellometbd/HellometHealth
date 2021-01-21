@@ -43,6 +43,10 @@ app.post("/uploadImageToGenarateUrl",
   res.sendFile(path.join(__dirname, "./Images/"+file));
 });
 
+app.get('/',function(req, res){
+    res.writeHead(200, {'Content-Type':'text/plain'});
+    res.end("Success");
+})
 
 //For Cpanel...
 //app.listen(3000);
