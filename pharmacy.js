@@ -11,7 +11,7 @@ var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.
 
 pharmacyRouter.post('/addPharmacy', function(req, res){
 
-    MongoClient.connect(URL,config, function(error, Client){
+    MongoClient.connect(connectionUrl,config, function(error, Client){
         if(error){
             console.log(error);
             res.json({ message: "Connection Failed" });
