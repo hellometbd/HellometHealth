@@ -2,39 +2,12 @@ const { ifError } = require("assert");
 
 const { json } = require("body-parser");
 var express = require("express");
-const multer = require("multer");
 const router = express.Router();
 
-var storage, path;
-path = require('path');
-
-// Include the node file module
-var fs = require('fs');
-
 var MongoClient = require('mongodb').MongoClient;
-var URL = "mongodb://127.0.0.1:27017/";
 var config = { useUnifiedTopology: true };
+var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.mongodb.net?retryWrites=true&w=majority";
 
-storage = multer.diskStorage({
-    destination: './Images/',
-    filename: function (req, file, cb) {
-        return cb(null, "image_" + new Date().getTime() + (path.extname(file.originalname)));
-    }
-});
-
-var upload = multer({ storage: storage })
-
-// uploading image to server hadrdisk then reference will insert to MongoDb...
-router.post("/uploadImageToGenarateUrl",
-    multer({
-        storage: storage
-    }).single('uploadImage'),
-    function (req, res) {
-        console.log(__dirname + "/Images/" + req.file.filename);
-        var ref = { url: "hellometbd.com/Images/" + req.file.filename }
-        res.json(ref);
-    }
-);
 
 router.post("/addMedicine", function (req, res) {
 
@@ -69,6 +42,28 @@ router.post("/addMedicine", function (req, res) {
             })
         }
     });
-})
+});
 
+
+router.get('/getMedicines', function(req, res){
+
+    MongoClient.connect(connectionUrl, config, function(error, Client){
+        if(error){
+            console.log(error);
+        }else{
+            let db = Client.db("medicine");
+            let collec = db.collection("meta_data");
+            var query = {};
+            collec.find(query).toArray(function(error, result){
+                if (error) {
+                    console.log(error);
+                }else{
+                    res.json(result);
+                    res.end();
+                }
+            })
+        }
+    })
+
+})
 module.exports = router;
