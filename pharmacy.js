@@ -2,14 +2,14 @@ const { ifError } = require("assert");
 
 const { json } = require("body-parser");
 var express = require("express");
-const router = express.Router();
+const pharmacyRouter = express.Router();
 
 var MongoClient = require('mongodb').MongoClient;
 var config = { useUnifiedTopology: true };
 var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.mongodb.net?retryWrites=true&w=majority";
 
 
-router.post('/addPharmacy', function(req, res){
+pharmacyRouter.post('/addPharmacy', function(req, res){
 
     MongoClient.connect(URL,config, function(error, Client){
         if(error){
@@ -46,7 +46,7 @@ router.post('/addPharmacy', function(req, res){
     });
 });
 
-router.get('/getPharmacies', function(req, res){
+pharmacyRouter.get('/getPharmacies', function(req, res){
 
     MongoClient.connect(connectionUrl, config, function(error, Client){
         if(error){
@@ -68,4 +68,4 @@ router.get('/getPharmacies', function(req, res){
 
 })
 
-module.exports = router;
+module.exports = pharmacyRouter;

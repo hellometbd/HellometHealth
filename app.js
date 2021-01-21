@@ -4,19 +4,14 @@ const app = express();
 const { ifError } = require("assert");
 const { json } = require("body-parser");
 app.use(express.json());
-var google = require('google')
 var storage, path;
 path = require('path');
 const multer = require("multer");
 
-
-
-const addMedicine = require('./medicine');
+const medicine = require('./medicine');
 const pharmacy = require('./pharmacy');
 
-
-
-app.use("/medicine", addMedicine);
+app.use("/medicine", medicine);
 app.use("/pharmacy",pharmacy);
 
 
