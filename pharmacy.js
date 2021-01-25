@@ -9,9 +9,9 @@ var config = { useUnifiedTopology: true };
 var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.mongodb.net?retryWrites=true&w=majority";
 
 
-pharmacyRouter.post('/addPharmacy', function(req, res){
+pharmacyRouter.post('/', function(req, res){
 
-    MongoClient.connect(URL,config, function(error, Client){
+    MongoClient.connect(connectionUrl,config, function(error, Client){
         if(error){
             console.log(error);
             res.json({ message: "Connection Failed" });
@@ -46,7 +46,7 @@ pharmacyRouter.post('/addPharmacy', function(req, res){
     });
 });
 
-pharmacyRouter.get('/getPharmacies', function(req, res){
+pharmacyRouter.get('/', function(req, res){
 
     MongoClient.connect(connectionUrl, config, function(error, Client){
         if(error){
@@ -54,15 +54,31 @@ pharmacyRouter.get('/getPharmacies', function(req, res){
         }else{
             let db = Client.db("pharmacy");
             let collec = db.collection("meta_data");
-            var query = {};
-            collec.find(query).toArray(function(error, result){
-                if (error) {
-                    console.log(error);
-                }else{
-                    res.json(result);
-                    res.end();
-                }
-            })
+
+
+            var pharmacyId = req.query.id;
+            if(pharmacyId!=null){
+                var query = {_id: pharmacyId};
+                collec.findOne(query,function(error, result){
+                    if (error) {
+                        console.log(error);
+                    }else{
+                        res.json(result);
+                        res.end();
+                    }
+                });
+
+            }else{
+                var query = {};
+                collec.find(query).toArray(function(error, result){
+                    if (error) {
+                        console.log(error);
+                    }else{
+                        res.json(result);
+                        res.end();
+                    }
+                })
+            }
         }
     })
 

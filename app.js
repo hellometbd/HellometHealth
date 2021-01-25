@@ -12,7 +12,7 @@ const medicine = require('./medicine');
 const pharmacy = require('./pharmacy');
 
 app.use("/medicine", medicine);
-app.use("/pharmacy",pharmacy);
+app.use("/pharmacy", pharmacy);
 
 
 storage = multer.diskStorage({
@@ -26,9 +26,7 @@ var upload = multer({ storage: storage })
 
 // uploading image to server hadrdisk then reference will insert to MongoDb...
 app.post("/uploadImageToGenarateUrl",
-    multer({
-        storage: storage
-    }).single('uploadImage'),
+    upload.single('uploadImage'),
     function (req, res) {
         console.log(__dirname + "/Images/" + req.file.filename);
         var ref = { url: "hellometbd.com/Images/" + req.file.filename }
@@ -43,6 +41,10 @@ app.post("/uploadImageToGenarateUrl",
   res.sendFile(path.join(__dirname, "./Images/"+file));
 });
 
+app.get('/get',function(req, res){
+    res.writeHead(200, {'Content-Type':'text/plain'});
+    res.end("Success");
+})
 
 //For Cpanel...
 //app.listen(3000);

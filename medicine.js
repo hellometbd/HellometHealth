@@ -8,13 +8,11 @@ var MongoClient = require('mongodb').MongoClient;
 var config = { useUnifiedTopology: true };
 var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.mongodb.net?retryWrites=true&w=majority";
 
+medicineRouter.post("/", function (req, res) {
 
-medicineRouter.post("/addMedicine", function (req, res) {
-
-    MongoClient.connect(URL, config, function (error, Client) {
+    MongoClient.connect(connectionUrl, config, function (error, Client) {
         if (error) {
-            console.log(error);
-            
+            console.log(error); 
         } else {
             let db_medicine = Client.db("medicine");
 
@@ -44,8 +42,7 @@ medicineRouter.post("/addMedicine", function (req, res) {
     });
 });
 
-
-medicineRouter.get('/getMedicines', function(req, res){
+medicineRouter.get('/', function(req, res){
 
     MongoClient.connect(connectionUrl, config, function(error, Client){
         if(error){
@@ -53,17 +50,33 @@ medicineRouter.get('/getMedicines', function(req, res){
         }else{
             let db = Client.db("medicine");
             let collec = db.collection("meta_data");
-            var query = {};
-            collec.find(query).toArray(function(error, result){
-                if (error) {
-                    console.log(error);
-                }else{
-                    res.json(result);
-                    res.end();
-                }
-            })
+            var medicineId = req.query.id;
+            if(medicineId!=null){
+                var query = {_id: medicineId};
+                collec.findOne(query,function(error, result){
+                    if (error) {
+                        console.log(error);
+                    }else{
+                        res.json(result);
+                        res.end();
+                    }
+                });
+
+            }else{
+                var query = {};
+                collec.find(query).toArray(function(error, result){
+                    if (error) {
+                        console.log(error);
+                    }else{
+                        res.json(result);
+                        res.end();
+                    }
+                })
+            }
         }
     })
 
 })
+
+
 module.exports = medicineRouter;
