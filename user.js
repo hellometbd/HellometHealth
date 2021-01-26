@@ -90,7 +90,7 @@ userRouter.get('/profile', function(req, res){
 
 });
 
-userRouter.post("/authentication",function(req, res){
+userRouter.get("/authentication",function(req, res){
 
     MongoClient.connect(connectionUrl, config, function(error, Client){
         if(error){
@@ -109,17 +109,18 @@ userRouter.post("/authentication",function(req, res){
                         console.log(error);
                     }else{
                         if (result==null) {
-                        res.json({ message: "Not Found" });
+                        res.json({ message: "No" });
                         //console.log(req.url.query);
                         res.end();
                         }else{
-                            res.json({ message: "Found" });
+                            res.json({ message: "Yes" });
                             res.end();
+                   //console.log(req.url.query);
                         }
                         
                     }
                 });
-        
+    
         }
     });
 
