@@ -10,9 +10,11 @@ const multer = require("multer");
 
 const medicine = require('./medicine');
 const pharmacy = require('./pharmacy');
+const user = require('./user');
 
 app.use("/medicine", medicine);
 app.use("/pharmacy", pharmacy);
+app.use("/user", user);
 
 
 storage = multer.diskStorage({
