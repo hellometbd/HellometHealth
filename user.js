@@ -51,8 +51,20 @@ userRouter.get('/profile', function(req, res){
             let db = Client.db("user");
             let collec = db.collection("meta_data");
             var userId = req.query.id;
-            if(userId!=null){
-                var query = {_id: userId};
+            var userEmail = req.query.email;
+            var UserPhone_number = "+"+req.query.phone_number;
+
+            var query=null;
+
+            if (userId!=null) {
+                query = {_id: userId };
+            }else if(userEmail!=null){
+                query = {"meta_data.email": userEmail };
+            }else if(UserPhone_number!=null){
+                query = {"meta_data.phone_number": UserPhone_number };
+            }
+
+            if(query!=null){
                 collec.findOne(query,function(error, result){
                     if (error) {
                         console.log(error);
@@ -63,7 +75,7 @@ userRouter.get('/profile', function(req, res){
                 });
 
             }else{
-                var query = {};
+                query = {};
                 collec.find(query).toArray(function(error, result){
                     if (error) {
                         console.log(error);
@@ -75,6 +87,42 @@ userRouter.get('/profile', function(req, res){
             }
         }
     })
+
+});
+
+userRouter.post("/authentication",function(req, res){
+
+    MongoClient.connect(connectionUrl, config, function(error, Client){
+        if(error){
+            console.log(error);
+        }else{
+            let db = Client.db("user");
+            let collec = db.collection("meta_data");
+
+            var query = { 
+                "meta_data.phone_number": "+"+req.query.phone_number,
+                "meta_data.password": req.query.password
+            }
+        
+                collec.findOne(query,function(error, result){
+                    if (error) {
+                        console.log(error);
+                    }else{
+                        if (result==null) {
+                        res.json({ message: "Not Found" });
+                        //console.log(req.url.query);
+                        res.end();
+                        }else{
+                            res.json({ message: "Found" });
+                            res.end();
+                        }
+                        
+                    }
+                });
+        
+        }
+    });
+
 
 })
 
