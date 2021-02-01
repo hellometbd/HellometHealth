@@ -11,10 +11,12 @@ const multer = require("multer");
 const medicine = require('./medicine');
 const pharmacy = require('./pharmacy');
 const user = require('./user');
+const order = require('./order');
 
 app.use("/medicine", medicine);
 app.use("/pharmacy", pharmacy);
 app.use("/user", user);
+app.use("/order", order);
 
 
 storage = multer.diskStorage({

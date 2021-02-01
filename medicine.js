@@ -13,6 +13,9 @@ medicineRouter.post("/", function (req, res) {
     MongoClient.connect(connectionUrl, config, function (error, Client) {
         if (error) {
             console.log(error); 
+            // console.log("uploading products meta_data to MongoDB has Failed: error: " + error);
+            // res.json({ message: "Medicine upload Failed" })
+            // res.end();
         } else {
             let db_medicine = Client.db("medicine");
 
