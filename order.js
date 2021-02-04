@@ -15,45 +15,42 @@ orderRouter.post("/", function (req, res) {
         } else {
             let dbOrder = Client.db("order");
             let collecOrder = dbOrder.collection("data");
+            const { pharmacy_id, pharmacy_name, pharmacy_address,pharmacy_phone_number, user_id, pharmacy_lat, pharmacy_lng,
+                user_phone_number, user_name, user_address, user_lat, user_lng, requirement, total_price, status,
+                payment_method, payment_status } = req.body.meta_data;
 
             var orderMetaData = {
-                pharmacy_id: req.body.meta_data.pharmacy_id,
-                requirement: req.body.meta_data.requirement,
-                user_lat: req.body.meta_data.user_lat,
-                user_lng: req.body.meta_data.user_lng,
-                user_address: req.body.meta_data.user_address,
-                user_phone_number: req.body.meta_data.user_phone_number,
-                total_price: req.body.meta_data.total_price,
-                status: req.body.meta_data.status,
+                pharmacy_id,
+                pharmacy_name,
+                pharmacy_phone_number,
+                pharmacy_address,
+                pharmacy_lat,
+                pharmacy_lng,   
+                user_id,
+                user_name,
+                user_phone_number,
+                user_address,
+                user_lat,
+                user_lng,
+                requirement,
+                total_price,
+                status: status,
+                payment_method,
+                payment_status,
                 created_at: Date.now(),
-                payment_method: req.body.meta_data.payment_method,
-                payment_status: req.body.meta_data.payment_status,
-            }            
-
-
-
+            }
             var order = {
-                _id: "O" + Date.now(),
+                _id: generateID("O"),
                 meta_data: orderMetaData,
                 items: req.body.items
             }
 
             collecOrder.insertOne(order, function (error, result) {
                 if (error) {
-                    console.log("Order Placement has Failed: error: " + error);
-                    // res.json({ message: "Something went wrong! Try Again." })
-                    // res.statusCode(404)
-                    // res.end();
-           
-                    res.send(error)
-                    //res.status(404).send("Not found.");
-                    res.status(400).send("Bad Request.");
+                    sendError(res, error);
 
                 } else {
-                    console.log("Order Placement has successful.");
-                    console.log(result);
-                    res.json({status:"1", message: "Order Place Successfuly" })
-                    res.end();
+                    sendResult(res, "Order Place Successfuly");
                 }
             })
         }
@@ -63,75 +60,48 @@ orderRouter.post("/", function (req, res) {
 orderRouter.get("/", function (req, res) {
     MongoClient.connect(connectionUrl, config, function (error, Client) {
         if (error) {
-            console.log(error);
-            res.json({ status:0, message: "Something went worng! Try again." })
-            res.end();
-            // console.log("Order Get Fail: error: " + error);
-            // res.json({ message: "Something went wrong! Try Again." })
-            // res.statusCode(404)
-            // res.end();
+            sendError(res, error);
 
         } else {
-            let dbOrder = Client.db("order");
-            let collecOrder = dbOrder.collection("data");
+            const dbOrder = Client.db("order");
+            const collecOrder = dbOrder.collection("data");
 
+            var { id, user_phone_number, pharmacy_phone_number } = req.query;
+            var query = null;
 
-            var id = req.query.id;
-            var user_phone_number = req.query.user_phone_number;
-            var pharmacy_id = req.query.pharmacy_id;
+            if (id != null) {
 
-            var query=null;
-
-            if (id!=null) {
-
-                query = {_id: id };
-                collecOrder.findOne(query,function(error, result){
+                query = { _id: id };
+                collecOrder.findOne(query, function (error, result) {
                     if (error) {
-                        console.log(error);
-                        res.status(404)
-                        res.json({ status:"0", message: "Something went worng! Try again." })
-                        res.end();
-                    }else{
-                        res.json(result);
-                        res.status(200)
-                        res.end();
+                        sendError(res, error);
+                    } else {
+                        sendResult(res, result);
                     }
                 });
 
-            }else{
+            } else {
 
-                if(user_phone_number!=null){
-                    query = {"meta_data.user_phone_number": user_phone_number };
-                    collecOrder.find(query).toArray(function(error, result){
+                if (user_phone_number != null) {
+                    query = { "meta_data.user_phone_number": user_phone_number };
+                    collecOrder.find(query).toArray(function (error, result) {
                         if (error) {
-                            console.log(error);
-                            res.status(404)
-                            res.json({ status:0, message: "Something went worng! Try again." })
-                        res.end();
-                        }else{
-                            res.json(result);
-                            res.status(200)
-                            res.end();
+                            sendError(res, error);
+                        } else {
+                            sendResult(res, result);
                         }
                     })
-                }else if(pharmacy_id!=null){
-                    query = {"meta_data.pharmacy_id": pharmacy_id };
-                    collecOrder.find(query).toArray(function(error, result){
+                } else if (pharmacy_phone_number != null) {
+                    query = { "meta_data.pharmacy_phone_number": pharmacy_phone_number };
+                    collecOrder.find(query).toArray(function (error, result) {
                         if (error) {
-                            console.log(error);
-                            res.status(404)
-                            res.json({ status:0, message: "Something went worng! Try again." })
-                        res.end();
-                        }else{
-                            res.json(result);
-                            res.status(200)
-                            res.end();
+                            sendError(res, error);
+                        } else {
+                            sendResult(res, result);
                         }
                     })
-                }else{
-                    res.json({ status:0, message: "No Order Found!" })
-                    res.status(404)
-                    res.end();
+                } else {
+                    notFoundException(res, "No Order Found!");
                 }
             }
         }
@@ -139,36 +109,59 @@ orderRouter.get("/", function (req, res) {
 })
 
 
-orderRouter.get("/all", function(req, res){
+orderRouter.get("/all", function (req, res) {
 
     MongoClient.connect(connectionUrl, config, function (error, Client) {
         if (error) {
-            console.log(error);
-            res.status(404)
-            res.end();
-            // console.log("Order Get Fail: error: " + error);
-            // res.json({ message: "Something went wrong! Try Again." })
-            // res.statusCode(404)
-            // res.end();
+            sendError(res, error);
 
         } else {
             let dbOrder = Client.db("order");
             let collecOrder = dbOrder.collection("data");
 
-                query = {};
-                collecOrder.find(query).toArray(function(error, result){
-                    if (error) {
-                        console.log(error);
-                        res.status(404)
-                        res.end();
-                    }else{
-                        res.json(result);
-                        res.status(200)
-                        res.end();
-                    }
-                })
+            var query = {};
+            collecOrder.find(query).toArray(function (error, result) {
+                if (error) {
+                    sendError(res, error);
+                } else {
+                    sendResult(res, result)
+                }
+            })
         }
     });
 })
+
+
+function sendError(res, error) {
+    console.log(error);
+    res.status(404)
+    res.end();
+}
+function sendResult(res, result) {
+    console.log(result);
+    res.json(result);
+    res.status(200)
+    res.end();
+}
+
+function notFoundException(res, message) {
+    console.log(message);
+    res.json({ status: 0, message })
+    res.status(404)
+    res.end();
+
+}
+
+function generateID(type){
+    var currentDateInMillisecond = Date.now();
+    function prepareDate(d) {
+        [d, m, y] = d.split("-"); //Split the string
+        return [y, m - 1, d]; //Return as an array with y,m,d sequence
+      }
+      let str = "31-12-2020";
+      let date2020 = new Date(...prepareDate(str));
+      let currentDateInMillisecAfter2020 = currentDateInMillisecond-date2020.getTime();
+      return type+currentDateInMillisecAfter2020;
+}
 
 module.exports = orderRouter;
