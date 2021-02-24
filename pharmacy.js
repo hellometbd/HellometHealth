@@ -27,7 +27,8 @@ pharmacyRouter.post('/', function(req, res){
             // set id for every part of pharmacy data...
             let pharmacy_meta_data = {
                 _id: pharmacyId,
-                meta_data: pharmacy_data.meta_data
+                meta_data: pharmacy_data.meta_data,
+                auth : pharmacy_data.auth
             }
 
             collec_meta_data.insertOne(pharmacy_meta_data, function(error, result){
@@ -36,29 +37,13 @@ pharmacyRouter.post('/', function(req, res){
                 res.send(error);
                 
             }else{
-                console.log(result);
-
-                let collec_auth = db.collection("auth");
-                let pharmacy_auth_data = {
-                    _id: pharmacyId,
-                    auth: pharmacy_data.auth
-                }
-
-                collec_auth.insertOne(pharmacy_auth_data, function(error, result_auth){
-                    if (error) {
-                        console.log("uploading pharmacy auth_data to MongoDB has Failed: error: " + error);
-                        res.send(error);
-                    }else{
-                        console.log("uploading pharmacy meta_data to MongoDB has successful.");
-                        res.json({ message: "Pharmacy successfully added." })
-                        console.log(result_auth);
+                    console.log("uploading pharmacy meta_data to MongoDB has successful.");
+                    console.log(result);
+                    console.log(result.ops[0]);
+                    res.json(result.ops[0]);
+                    res.end();
                     }
-                })
-
-                
-            }
-        }) 
-        
+        })  
         
         }
     });

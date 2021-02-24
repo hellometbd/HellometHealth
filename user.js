@@ -33,8 +33,8 @@ userRouter.post("/profile", function (req, res) {
 
                 } else {
                     console.log("uploading user meta_data to MongoDB has successful.");
-                    console.log(result);
-                    res.json({ message: "Profile set up Successfully." })
+                    console.log(result.ops[0]);
+                    res.json(result.ops[0]);
                     res.end();
                 }
             })
