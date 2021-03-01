@@ -83,7 +83,7 @@ orderRouter.get("/", function (req, res) {
             const collecOrder = dbOrder.collection("data");
             var { id, user_phone_number, pharmacy_phone_number, status, deliveryman_phone_number } = req.query;
             var query = null;
-
+            console.log(req.query);
             if (id != null) {
                 query = { _id: id };
                 findDataObjectThenSend(res, collecOrder, query);
@@ -94,6 +94,7 @@ orderRouter.get("/", function (req, res) {
                     query = { "meta_data.user_phone_number": user_phone_number, "meta_data.status": status };
                     findDataArrayThenSend(res, collecOrder, query);
                 } else {
+                    console.log(user_phone_number);
                     query = { "meta_data.user_phone_number": user_phone_number };
                     findDataArrayThenSend(res, collecOrder, query);
                 }
@@ -112,9 +113,11 @@ orderRouter.get("/", function (req, res) {
             else if (deliveryman_phone_number != null) {
 
                 if (status != null) {
+                    console.log("Order by deliveryman_phone_number and Status");
                     query = { "meta_data.deliveryman_phone_number": deliveryman_phone_number, "meta_data.status": status };
                     findDataArrayThenSend(res, collecOrder, query);
                 } else {
+                    console.log("Order by deliveryman_phone_number");
                     query = { "meta_data.deliveryman_phone_number": deliveryman_phone_number };
                     findDataArrayThenSend(res, collecOrder, query);
                 }
@@ -310,7 +313,8 @@ function findDataArrayThenSend(res, collection, query) {
         if (error) {
             sendError(res, error);
         } else {
-            if (result != null && result.length > 0) {
+            if (result != null) {
+                console.log(result);
                 sendResult(res, result);
             } else {
                 notFoundException(res, "Nothing Found!");

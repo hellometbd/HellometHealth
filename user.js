@@ -111,7 +111,6 @@ userRouter.get("/authentication",function(req, res){
                         if (result==null) {
                         res.status(404);
                         res.end();
-                        res.end();
                         }else{
                             console.log(result);
                             res.json(result);

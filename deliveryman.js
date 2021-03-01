@@ -18,7 +18,7 @@ deliverymanRouter.post('/', function(req, res){
             console.log("Connection Success.");
             console.log(deliveryman_data);
             
-            let db = Client.db("delieryman");
+            let db = Client.db("deliveryman");
             let collec_data = db.collection("data");
  
             let deliverymanId = "D" + Date.now();
@@ -59,20 +59,22 @@ deliverymanRouter.get('/', function(req, res){
             console.log("Connection Success.");
             console.log(deliveryman_data);
             
-            let db = Client.db("delieryman");
+            let db = Client.db("deliveryman");
             let collec_data = db.collection("data");
    
         
 
             var deliverymanId = req.query.id;
             var phone_number = req.query.phone_number;
+            console.log(deliverymanId);
+            console.log(phone_number);
 
             if (deliverymanId!=null) {
                 var query = {_id: deliverymanId};
                 collec_data.findOne(query,function(error, result){
                     if (error) {
                         console.log(error);
-                        res.send(error)
+                        res.end();
                     }else{
                         var resultData= {
                             _id: result._id,
@@ -88,10 +90,9 @@ deliverymanRouter.get('/', function(req, res){
                 collec_data.findOne(query,function(error, result){
                     if (error) {
                         console.log(error);
-                        res.send(error)
+                        res.end();
                     }else{
                         if(result==null) {
-                            res.json(result);
                             res.end();
                             }else{
                                 var resultData= {
@@ -128,16 +129,17 @@ deliverymanRouter.get("/auth",function(req, res){
             let collec = db.collection("data");
 
             var query = { 
-                "auth.phone_number": "+"+req.query.phone_number,
+                "auth.phone_number": req.query.phone_number,
                 "auth.password": req.query.password
             }
+            console.log(req.query.phone_number);
+            console.log(req.query.password);
         
                 collec.findOne(query,function(error, result){
                     if (error) {
                         console.log(error);
                     }else{
                         if (result==null) {
-                        res.status(404);
                         res.end();
                         }else{
                             console.log(result);
