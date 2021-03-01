@@ -74,6 +74,7 @@ deliverymanRouter.get('/', function(req, res){
                 collec_data.findOne(query,function(error, result){
                     if (error) {
                         console.log(error);
+                        res.json(result)
                         res.end();
                     }else{
                         var resultData= {
@@ -93,6 +94,7 @@ deliverymanRouter.get('/', function(req, res){
                         res.end();
                     }else{
                         if(result==null) {
+                            res.json(result)
                             res.end();
                             }else{
                                 var resultData= {
