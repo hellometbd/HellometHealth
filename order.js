@@ -81,7 +81,7 @@ orderRouter.get("/", function (req, res) {
         } else {
             const dbOrder = Client.db("order");
             const collecOrder = dbOrder.collection("data");
-            var { id, user_phone_number, pharmacy_phone_number, status, deliveryman_phone_number } = req.query;
+            var { id, user_phone_number, pharmacy_id, status, deliveryman_phone_number } = req.query;
             var query = null;
             console.log(req.query);
             if (id != null) {
@@ -100,12 +100,12 @@ orderRouter.get("/", function (req, res) {
                 }
             }
 
-            else if (pharmacy_phone_number != null) {
+            else if (pharmacy_id != null) {
                 if (status != null) {
-                    query = { "meta_data.pharmacy_phone_number": pharmacy_phone_number, "meta_data.status": status };
+                    query = { "meta_data.pharmacy_id": pharmacy_id, "meta_data.status": status };
                     findDataArrayThenSend(res, collecOrder, query);
                 } else {
-                    query = { "meta_data.pharmacy_phone_number": pharmacy_phone_number };
+                    query = { "meta_data.pharmacy_id": pharmacy_id };
                     findDataArrayThenSend(res, collecOrder, query);
                 }
             }
@@ -143,6 +143,7 @@ orderRouter.get("/all", function (req, res) {
             var query = {};
             var { action, status } = req.query;
 
+            console.log(req.query);
             // Get All Local Order...
             if (action != null && action == "local") {
                 collecOrder.find(query).toArray(function (error, result) {
@@ -210,9 +211,11 @@ orderRouter.get("/range", function (req, res) {
                                 }
                             }
                         } else {
+                            res.json({});
                             notFoundException(res, "Nothing Found!")
                         }
                     } else {
+                        res.json({});
                         notFoundException(res, "Nothing Found!")
                     }
                 }
@@ -220,7 +223,6 @@ orderRouter.get("/range", function (req, res) {
         }
     });
 })
-
 
 //Update Order By  ID...
 orderRouter.patch("/:id", function (req, res) {
@@ -257,6 +259,7 @@ orderRouter.patch("/:id", function (req, res) {
 function filterLocalOrderThenSend(req, res, result) {
 
     if (result == null || result.length < 1) {
+        res.json(result);
         notFoundException(res, "Nothing Found!");
         return;
     }
@@ -311,14 +314,13 @@ function getDistanceOfAreaFromOnePlaceToAnother(fromLat, fromLng, toLat, toLng) 
 function findDataArrayThenSend(res, collection, query) {
     collection.find(query).toArray(function (error, result) {
         if (error) {
-            sendError(res, error);
+            console.log(error);
+            res.json({});
+            res.end();
         } else {
-            if (result != null) {
-                console.log(result);
-                sendResult(res, result);
-            } else {
-                notFoundException(res, "Nothing Found!");
-            }
+            res.json(result);
+            console.log(result);
+            res.end();
         }
     })
 }
@@ -330,6 +332,7 @@ function findDataObjectThenSend(res, collection, query) {
             if (result != null && result.length > 0) {
                 sendResult(res, result);
             } else {
+                res.json(result);
                 notFoundException(res, "Nothing Found!");
             }
         }
@@ -338,7 +341,7 @@ function findDataObjectThenSend(res, collection, query) {
 
 function sendError(res, error) {
     console.log(error);
-    res.status(404)
+    res.status(404);
     res.end();
 }
 function sendResult(res, result) {
@@ -351,7 +354,8 @@ function sendResult(res, result) {
 function notFoundException(res, message) {
     console.log(message);
     //res.json({ status: 0, message })
-    res.status(404)
+    //res.status(404)
+    res.json({});
     res.end();
 
 }

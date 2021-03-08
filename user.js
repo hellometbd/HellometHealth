@@ -68,6 +68,8 @@ userRouter.get('/profile', function(req, res){
                 collec.findOne(query,function(error, result){
                     if (error) {
                         console.log(error);
+                        res.json({})
+                        res.end();
                     }else{
                         res.json(result);
                         res.end();
@@ -79,6 +81,8 @@ userRouter.get('/profile', function(req, res){
                 collec.find(query).toArray(function(error, result){
                     if (error) {
                         console.log(error);
+                        res.json({})
+                        res.end();
                     }else{
                         res.json(result);
                         res.end();
@@ -95,28 +99,24 @@ userRouter.get("/authentication",function(req, res){
     MongoClient.connect(connectionUrl, config, function(error, Client){
         if(error){
             console.log(error);
+            res.json({});
+            res.end();
         }else{
             let db = Client.db("user");
             let collec = db.collection("meta_data");
 
             var query = { 
-                "meta_data.phone_number": "+"+req.query.phone_number,
+                "meta_data.phone_number": req.query.phone_number,
                 "meta_data.password": req.query.password
             }
-        
+        console.log(req.query);
                 collec.findOne(query,function(error, result){
                     if (error) {
                         console.log(error);
                     }else{
-                        if (result==null) {
-                        res.status(404);
-                        res.end();
-                        }else{
                             console.log(result);
                             res.json(result);
                             res.end();
-                        }
-                        
                     }
                 });
     

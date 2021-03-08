@@ -16,26 +16,26 @@ pharmacyRouter.post('/', function(req, res){
             console.log(error);
                 res.send(error);
         }else{
-            let pharmacy_data = req.body;
+            let data = req.body;
             console.log("Connection Success.");
-            console.log(pharmacy_data);
+            console.log(data);
             
             let db = Client.db("pharmacy");
-            let collec_meta_data = db.collection("meta_data");
+            let collec_data = db.collection("data");
 
             let pharmacyId = "P" + Date.now();
             // set id for every part of pharmacy data...
-            let pharmacy_meta_data = {
+            let pharmacy_data = {
                 _id: pharmacyId,
-                meta_data: pharmacy_data.meta_data,
-                auth : pharmacy_data.auth
+                meta_data: data.meta_data,
+                auth : data.auth
             }
 
-            collec_meta_data.insertOne(pharmacy_meta_data, function(error, result){
+            collec_data.insertOne(pharmacy_data, function(error, result){
             if(error){
                 console.log("uploading pharmacy meta_data to MongoDB has Failed: error: " + error);
-                res.send(error);
-                
+                res.json({})
+                res.end();
             }else{
                     console.log("uploading pharmacy meta_data to MongoDB has successful.");
                     console.log(result);
@@ -56,16 +56,19 @@ pharmacyRouter.get('/', function(req, res){
             console.log(error);
         }else{
             let db = Client.db("pharmacy");
-            let collec = db.collection("meta_data");
+            let collec = db.collection("data");
 
             var pharmacyId = req.query.id;
             var phone_number = req.query.phone_number;
+            console.log(req.query);
             if(pharmacyId!=null){
+                
                 var query = {_id: pharmacyId};
                 collec.findOne(query,function(error, result){
                     if (error) {
                         console.log(error);
-                        res.send(error)
+                        res.json({})
+                        res.end();
                     }else{
                         res.json(result);
                         res.end();
@@ -77,7 +80,8 @@ pharmacyRouter.get('/', function(req, res){
                 collec.findOne(query,function(error, result){
                     if (error) {
                         console.log(error);
-                        res.send(error)
+                        res.json({})
+                        res.end();
                     }else{
                         res.json(result);
                         res.end();
@@ -90,9 +94,9 @@ pharmacyRouter.get('/', function(req, res){
                 collec.find(query).toArray(function(error, result){
                     if (error) {
                         console.log(error);
-                        res.send(error)
-                        //res.status(404).send("Not found.");
-                        res.status(400).send("Bad Request.");
+                        res.json({})
+                        res.end();
+                        
                     }else{
                         res.json(result);
                         res.end();
@@ -111,7 +115,7 @@ pharmacyRouter.get('/auth', function(req, res){
             console.log(error);
         }else{
             let db = Client.db("pharmacy");
-            let collec = db.collection("auth");
+            let collec = db.collection("data");
 
             var phone_number = req.query.phone_number;
             var password = req.query.password;
@@ -122,17 +126,27 @@ pharmacyRouter.get('/auth', function(req, res){
                         console.log(error);
                         res.status(404).send("Not found.");
                     }else{
+                        console.log(result);
+
                         if (result!=null) {
-                            res.json(result.auth);
+
+                            var resultData = {
+                                _id: result._id,
+                                meta_data: result.meta_data
+                            }
+
+                            res.json(resultData);
+                            
                         res.end();
                         }else{
+                    
                             res.status(500).send("Internal Server Error.");
                         }
                     }
                 });
             }else{
+                
                 res.status(500).send("Internal Server Error.");
-
                 // res.send(error);//not checked.
                 // res.status(404).send("Not found.");
                 // res.status(400).send("Bad Request.");
