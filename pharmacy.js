@@ -83,6 +83,7 @@ pharmacyRouter.get('/', function(req, res){
                         res.json({})
                         res.end();
                     }else{
+                        console.log(result);
                         res.json(result);
                         res.end();
                     }

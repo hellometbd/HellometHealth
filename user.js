@@ -52,7 +52,7 @@ userRouter.get('/profile', function(req, res){
             let collec = db.collection("meta_data");
             var userId = req.query.id;
             var userEmail = req.query.email;
-            var UserPhone_number = "+"+req.query.phone_number;
+            var UserPhone_number = req.query.phone_number;
 
             var query=null;
 
@@ -65,12 +65,14 @@ userRouter.get('/profile', function(req, res){
             }
 
             if(query!=null){
+                console.log(req.query);
                 collec.findOne(query,function(error, result){
                     if (error) {
                         console.log(error);
                         res.json({})
                         res.end();
                     }else{
+                        console.log(result);
                         res.json(result);
                         res.end();
                     }
