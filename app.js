@@ -22,14 +22,18 @@ app.use("/order", order);
 app.use("/deliveryman", deliveryman);
 app.use("/practice", practice);
 
-app.use((req, res, next) => {
-    res.append('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.append('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-res.append('Access-Control-Allow-Credentials', 'true');
+var cors = require('cors')
 
-    next();
-});
+app.use(cors()) // Use this after the variable declaration
+
+// app.use((req, res, next) => {
+//     res.append('Access-Control-Allow-Origin', 'http://localhost:3000');
+//     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+//     res.append('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+// res.append('Access-Control-Allow-Credentials', 'true');
+
+//     next();
+// });
 
 storage = multer.diskStorage({
     destination: './Images/',
