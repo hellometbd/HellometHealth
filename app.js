@@ -13,12 +13,14 @@ const pharmacy = require('./pharmacy');
 const user = require('./user');
 const order = require('./order');
 const deliveryman = require('./deliveryman');
+const practice = require('./practice');
 
 app.use("/medicine", medicine);
 app.use("/pharmacy", pharmacy);
 app.use("/user", user);
 app.use("/order", order);
 app.use("/deliveryman", deliveryman);
+app.use("/practice", practice);
 
 storage = multer.diskStorage({
     destination: './Images/',
