@@ -25,7 +25,7 @@ app.use("/practice", practice);
 app.use((req, res, next) => {
     res.append('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    res.append('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     next();
 });
 
@@ -65,7 +65,7 @@ app.get('/get',function(req, res){
 
 
 //For Cloud Hosting...
-const PORT = process.env.PORT || 1010;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, function(error){
     if(error){
         console.log(error);
