@@ -8,6 +8,8 @@ var storage, path;
 path = require('path');
 const multer = require("multer");
 
+var mongoUtil = require( './mongoUtil' );
+
 const medicine = require('./medicine');
 const pharmacy = require('./pharmacy');
 const user = require('./user');
@@ -34,6 +36,19 @@ app.use(cors()) // Use this after the variable declaration
 
 //     next();
 // });
+
+
+mongoUtil.connetToServer(function(error, Client){
+    if (error) {
+        console.log(error);
+    }else{
+
+        //todo.....mongodb connection now can reuse...
+
+
+
+    }
+})
 
 storage = multer.diskStorage({
     destination: './Images/',

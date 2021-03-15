@@ -4,6 +4,8 @@ const { json } = require("body-parser");
 var express = require("express");
 const pharmacyRouter = express.Router();
 
+const mongoUtil = require('./mongoUtil')
+
 var MongoClient = require('mongodb').MongoClient;
 var config = { useUnifiedTopology: true };
 var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.mongodb.net?retryWrites=true&w=majority";
@@ -158,51 +160,56 @@ pharmacyRouter.get('/auth', function (req, res) {
 })
 
 //Update Pharmacy By  ID...
-pharmacyRouter.put("/:id", function (req, res) {
-    MongoClient.connect(connectionUrl, config, function (error, Client) {
-        if (error) {
-            sendError(res, error);
-        } else {
+pharmacyRouter.patch("/:id", function (req, res) {
 
-            let id = req.params.id;
-            var status = req.query.status;
-            let dbPharmacy = Client.db("pharmacy");
-            let collecPharmacy = dbPharmacy.collection("data");
+    var Client = mongoUtil.getMongoClient();
+    let dbPharmacy = Client.db("pharmacy");
+    let collecPharmacy = dbPharmacy.collection("data");
 
-            console.log(id);
-            if (id != null && status != null) {
 
-                var findQuery = { _id: id };
-                collecPharmacy.findOne(findQuery, function (error, result) {
+    // MongoClient.connect(connectionUrl, config, function (error, Client) {
+    //     if (error) {
+    //         sendError(res, error);
+    //     } else {
+
+    let id = req.params.id;
+    var status = req.query.status;
+
+
+    console.log(id);
+    if (id != null && status != null) {
+
+        var findQuery = { _id: id };
+        collecPharmacy.findOne(findQuery, function (error, result) {
+            if (error) {
+                console.log(error);
+                res.json({})
+                res.end();
+            } else {
+                let updatedData = req.body;
+                updatedData.meta_data.status = status;
+                //var ObjectID = require('mongodb').ObjectID;
+                //var query = {"_id": ObjectID(req.params.id)};
+                let query = { "_id": id };
+                var newvalues = { $set: updatedData };
+                collecOrder.updateOne(query, newvalues, function (error, result) {
                     if (error) {
                         console.log(error);
-                        res.json({})
+                        res.sendStatus(404);
                         res.end();
                     } else {
-                        let updatedData = req.body;
-                        updatedData.meta_data.status = status;
-                        //var ObjectID = require('mongodb').ObjectID;
-                        //var query = {"_id": ObjectID(req.params.id)};
-                        let query = { "_id": id };
-                        var newvalues = { $set: updatedData };
-                        collecOrder.updateOne(query, newvalues, function (error, result) {
-                            if (error) {
-                                console.log(error);
-                                res.sendStatus(404);
-                                res.end();
-                            } else {
-                                console.log("Pharmacy Status updated to "+status);
-                                console.log(result);
-                                res.json(result);
-                                res.end();
-                            }
-                        })
+                        console.log("Pharmacy Status updated to " + status);
+                        console.log(result);
+                        res.json(result);
+                        res.end();
                     }
-                });
-
+                })
             }
-        }
-    });
+        });
+
+    }
+    //     }
+    // });
 })
 
 module.exports = pharmacyRouter;
