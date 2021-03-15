@@ -9,17 +9,17 @@ var config = { useUnifiedTopology: true };
 var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.mongodb.net?retryWrites=true&w=majority";
 
 
-pharmacyRouter.post('/', function(req, res){
+pharmacyRouter.post('/', function (req, res) {
 
-    MongoClient.connect(connectionUrl,config, function(error, Client){
-        if(error){
+    MongoClient.connect(connectionUrl, config, function (error, Client) {
+        if (error) {
             console.log(error);
-                res.send(error);
-        }else{
+            res.send(error);
+        } else {
             let data = req.body;
             console.log("Connection Success.");
             console.log(data);
-            
+
             let db = Client.db("pharmacy");
             let collec_data = db.collection("data");
 
@@ -28,61 +28,61 @@ pharmacyRouter.post('/', function(req, res){
             let pharmacy_data = {
                 _id: pharmacyId,
                 meta_data: data.meta_data,
-                auth : data.auth
+                auth: data.auth
             }
 
-            collec_data.insertOne(pharmacy_data, function(error, result){
-            if(error){
-                console.log("uploading pharmacy meta_data to MongoDB has Failed: error: " + error);
-                res.json({})
-                res.end();
-            }else{
+            collec_data.insertOne(pharmacy_data, function (error, result) {
+                if (error) {
+                    console.log("uploading pharmacy meta_data to MongoDB has Failed: error: " + error);
+                    res.json({})
+                    res.end();
+                } else {
                     console.log("uploading pharmacy meta_data to MongoDB has successful.");
                     console.log(result);
                     console.log(result.ops[0]);
                     res.json(result.ops[0]);
                     res.end();
-                    }
-        })  
-        
+                }
+            })
+
         }
     });
 });
 
-pharmacyRouter.get('/', function(req, res){
+pharmacyRouter.get('/', function (req, res) {
 
-    MongoClient.connect(connectionUrl, config, function(error, Client){
-        if(error){
+    MongoClient.connect(connectionUrl, config, function (error, Client) {
+        if (error) {
             console.log(error);
-        }else{
+        } else {
             let db = Client.db("pharmacy");
             let collec = db.collection("data");
 
             var pharmacyId = req.query.id;
             var phone_number = req.query.phone_number;
             console.log(req.query);
-            if(pharmacyId!=null){
-                
-                var query = {_id: pharmacyId};
-                collec.findOne(query,function(error, result){
+            if (pharmacyId != null) {
+
+                var query = { _id: pharmacyId };
+                collec.findOne(query, function (error, result) {
                     if (error) {
                         console.log(error);
                         res.json({})
                         res.end();
-                    }else{
+                    } else {
                         res.json(result);
                         res.end();
                     }
                 });
 
-            }else if(phone_number!=null){
-                var query = {"meta_data.phone_number": phone_number};
-                collec.findOne(query,function(error, result){
+            } else if (phone_number != null) {
+                var query = { "meta_data.phone_number": phone_number };
+                collec.findOne(query, function (error, result) {
                     if (error) {
                         console.log(error);
                         res.json({})
                         res.end();
-                    }else{
+                    } else {
                         console.log(result);
                         res.json(result);
                         res.end();
@@ -90,15 +90,15 @@ pharmacyRouter.get('/', function(req, res){
                 });
 
             }
-            else{
+            else {
                 var query = {};
-                collec.find(query).toArray(function(error, result){
+                collec.find(query).toArray(function (error, result) {
                     if (error) {
                         console.log(error);
                         res.json({})
                         res.end();
-                        
-                    }else{
+
+                    } else {
                         res.json(result);
                         res.end();
                     }
@@ -109,27 +109,27 @@ pharmacyRouter.get('/', function(req, res){
 
 })
 
-pharmacyRouter.get('/auth', function(req, res){
+pharmacyRouter.get('/auth', function (req, res) {
 
-    MongoClient.connect(connectionUrl, config, function(error, Client){
-        if(error){
+    MongoClient.connect(connectionUrl, config, function (error, Client) {
+        if (error) {
             console.log(error);
-        }else{
+        } else {
             let db = Client.db("pharmacy");
             let collec = db.collection("data");
 
             var phone_number = req.query.phone_number;
             var password = req.query.password;
-            if(phone_number!=null && password!= null){
-                var query = {"auth.phone_number": phone_number, "auth.password": password};
-                collec.findOne(query,function(error, result){
+            if (phone_number != null && password != null) {
+                var query = { "auth.phone_number": phone_number, "auth.password": password };
+                collec.findOne(query, function (error, result) {
                     if (error) {
                         console.log(error);
                         res.status(404).send("Not found.");
-                    }else{
+                    } else {
                         console.log(result);
 
-                        if (result!=null) {
+                        if (result != null) {
 
                             var resultData = {
                                 _id: result._id,
@@ -137,16 +137,16 @@ pharmacyRouter.get('/auth', function(req, res){
                             }
 
                             res.json(resultData);
-                            
-                        res.end();
-                        }else{
-                    
+
+                            res.end();
+                        } else {
+
                             res.status(500).send("Internal Server Error.");
                         }
                     }
                 });
-            }else{
-                
+            } else {
+
                 res.status(500).send("Internal Server Error.");
                 // res.send(error);//not checked.
                 // res.status(404).send("Not found.");
@@ -157,6 +157,52 @@ pharmacyRouter.get('/auth', function(req, res){
 
 })
 
+//Update Pharmacy By  ID...
+pharmacyRouter.patch("/:id", function (req, res) {
+    MongoClient.connect(connectionUrl, config, function (error, Client) {
+        if (error) {
+            sendError(res, error);
+        } else {
 
+            let id = req.params.id;
+            var status = req.query.status;
+            let dbPharmacy = Client.db("pharmacy");
+            let collecPharmacy = dbPharmacy.collection("data");
+
+            console.log(id);
+            if (id != null && status != null) {
+
+                var findQuery = { _id: id };
+                collecPharmacy.findOne(findQuery, function (error, result) {
+                    if (error) {
+                        console.log(error);
+                        res.json({})
+                        res.end();
+                    } else {
+                        let updatedData = req.body;
+                        updatedData.meta_data.status = status;
+                        //var ObjectID = require('mongodb').ObjectID;
+                        //var query = {"_id": ObjectID(req.params.id)};
+                        let query = { "_id": id };
+                        var newvalues = { $set: updatedData };
+                        collecOrder.updateOne(query, newvalues, function (error, result) {
+                            if (error) {
+                                console.log(error);
+                                res.sendStatus(404);
+                                res.end();
+                            } else {
+                                console.log("Pharmacy Status updated to "+status);
+                                console.log(result);
+                                res.json(result);
+                                res.end();
+                            }
+                        })
+                    }
+                });
+
+            }
+        }
+    });
+})
 
 module.exports = pharmacyRouter;
