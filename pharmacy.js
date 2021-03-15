@@ -163,50 +163,40 @@ pharmacyRouter.get('/auth', function (req, res) {
 pharmacyRouter.patch("/:id", function (req, res) {
 
     var Client = mongoUtil.getMongoClient();
-    let dbPharmacy = Client.db("pharmacy");
-    let collecPharmacy = dbPharmacy.collection("data");
-
-
+    
     // MongoClient.connect(connectionUrl, config, function (error, Client) {
     //     if (error) {
-    //         sendError(res, error);
+    //         console.log(error);
+    //         res.status(404).send("Not found.");
     //     } else {
-
+        let dbPharmacy = Client.db("pharmacy");
+        let collecPharmacy = dbPharmacy.collection("data");
     let id = req.params.id;
-    var status = req.query.status;
 
 
     console.log(id);
-    if (id != null && status != null) {
+    if (id != null) {
 
-        var findQuery = { _id: id };
-        collecPharmacy.findOne(findQuery, function (error, result) {
-            if (error) {
-                console.log(error);
-                res.json({})
-                res.end();
-            } else {
                 let updatedData = req.body;
-                updatedData.meta_data.status = status;
+
+
+                console.log(updatedData);
                 //var ObjectID = require('mongodb').ObjectID;
                 //var query = {"_id": ObjectID(req.params.id)};
                 let query = { "_id": id };
                 var newvalues = { $set: updatedData };
-                collecOrder.updateOne(query, newvalues, function (error, result) {
+                collecPharmacy.updateOne(query, newvalues, function (error, result) {
                     if (error) {
                         console.log(error);
                         res.sendStatus(404);
                         res.end();
                     } else {
-                        console.log("Pharmacy Status updated to " + status);
+                        console.log("Pharmacy Status updated");
                         console.log(result);
                         res.json(result);
                         res.end();
                     }
                 })
-            }
-        });
-
     }
     //     }
     // });
