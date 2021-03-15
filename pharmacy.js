@@ -158,7 +158,7 @@ pharmacyRouter.get('/auth', function (req, res) {
 })
 
 //Update Pharmacy By  ID...
-pharmacyRouter.patch("/:id", function (req, res) {
+pharmacyRouter.put("/:id", function (req, res) {
     MongoClient.connect(connectionUrl, config, function (error, Client) {
         if (error) {
             sendError(res, error);
