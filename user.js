@@ -11,10 +11,11 @@ var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.
 
 userRouter.post("/profile", function (req, res) {
 
-    MongoClient.connect(connectionUrl, config, function (error, Client) {
-        if (error) {
-            console.log(error); 
-        } else {
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function (error, Client) {
+    //     if (error) {
+    //         console.log(error); 
+    //     } else {
             let db_user = Client.db("user");
 
             //uploading products meta_data....
@@ -39,16 +40,17 @@ userRouter.post("/profile", function (req, res) {
                     res.end();
                 }
             })
-        }
-    });
+    //     }
+    // });
 });
 
 userRouter.get('/profile', function(req, res){
 
-    MongoClient.connect(connectionUrl, config, function(error, Client){
-        if(error){
-            console.log(error);
-        }else{
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function(error, Client){
+    //     if(error){
+    //         console.log(error);
+    //     }else{
             let db = Client.db("user");
             let collec = db.collection("meta_data");
             var userId = req.query.id;
@@ -92,19 +94,21 @@ userRouter.get('/profile', function(req, res){
                     }
                 })
             }
-        }
-    })
+    //     }
+    // })
 
 });
 
 userRouter.get("/authentication",function(req, res){
 
-    MongoClient.connect(connectionUrl, config, function(error, Client){
-        if(error){
-            console.log(error);
-            res.json({});
-            res.end();
-        }else{
+
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function(error, Client){
+    //     if(error){
+    //         console.log(error);
+    //         res.json({});
+    //         res.end();
+    //     }else{
             let db = Client.db("user");
             let collec = db.collection("meta_data");
 
@@ -123,8 +127,8 @@ userRouter.get("/authentication",function(req, res){
                     }
                 });
     
-        }
-    });
+    //     }
+    // });
 
 
 })
