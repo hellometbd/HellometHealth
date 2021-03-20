@@ -3,6 +3,7 @@ const { ifError } = require("assert");
 const { json } = require("body-parser");
 var express = require("express");
 const medicineRouter = express.Router();
+const mongoUtil = require('./mongoUtil')
 
 var MongoClient = require('mongodb').MongoClient;
 var config = { useUnifiedTopology: true };
