@@ -13,11 +13,12 @@ var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.
 
 pharmacyRouter.post('/', function (req, res) {
 
-    MongoClient.connect(connectionUrl, config, function (error, Client) {
-        if (error) {
-            console.log(error);
-            res.send(error);
-        } else {
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function (error, Client) {
+    //     if (error) {
+    //         console.log(error);
+    //         res.send(error);
+    //     } else {
             let data = req.body;
             console.log("Connection Success.");
             console.log(data);
@@ -47,16 +48,17 @@ pharmacyRouter.post('/', function (req, res) {
                 }
             })
 
-        }
-    });
+    //     }
+    // });
 });
 
 pharmacyRouter.get('/', function (req, res) {
 
-    MongoClient.connect(connectionUrl, config, function (error, Client) {
-        if (error) {
-            console.log(error);
-        } else {
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function (error, Client) {
+    //     if (error) {
+    //         console.log(error);
+    //     } else {
             let db = Client.db("pharmacy");
             let collec = db.collection("data");
 
@@ -106,17 +108,18 @@ pharmacyRouter.get('/', function (req, res) {
                     }
                 })
             }
-        }
-    })
+    //     }
+    // })
 
 })
 
 pharmacyRouter.get('/auth', function (req, res) {
 
-    MongoClient.connect(connectionUrl, config, function (error, Client) {
-        if (error) {
-            console.log(error);
-        } else {
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function (error, Client) {
+    //     if (error) {
+    //         console.log(error);
+    //     } else {
             let db = Client.db("pharmacy");
             let collec = db.collection("data");
 
@@ -154,8 +157,8 @@ pharmacyRouter.get('/auth', function (req, res) {
                 // res.status(404).send("Not found.");
                 // res.status(400).send("Bad Request.");
             }
-        }
-    })
+    //     }
+    // })
 
 })
 

@@ -9,11 +9,13 @@ var config = { useUnifiedTopology: true };
 var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.mongodb.net?retryWrites=true&w=majority";
 
 deliverymanRouter.post('/', function(req, res){
-    MongoClient.connect(connectionUrl,config, function(error, Client){
-        if(error){
-            console.log(error);
-                res.send(error);
-        }else{
+    
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl,config, function(error, Client){
+    //     if(error){
+    //         console.log(error);
+    //             res.send(error);
+    //     }else{
             let deliveryman_data = req.body;
             console.log("Connection Success.");
             console.log(deliveryman_data);
@@ -43,18 +45,19 @@ deliverymanRouter.post('/', function(req, res){
                     }
         })  
         
-        }
-    });
+    //     }
+    // });
 });
 
 
 deliverymanRouter.get('/', function(req, res){
 
-    MongoClient.connect(connectionUrl,config, function(error, Client){
-        if(error){
-            console.log(error);
-                res.send(error);
-        }else{
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl,config, function(error, Client){
+    //     if(error){
+    //         console.log(error);
+    //             res.send(error);
+    //     }else{
             let deliveryman_data = req.body;
             console.log("Connection Success.");
             console.log(deliveryman_data);
@@ -115,18 +118,19 @@ deliverymanRouter.get('/', function(req, res){
             //    // res.status(404).end();
             //    // notFoundException(res, "Not Found.")
             // }
-        }
-    });
+    //     }
+    // });
 });
 
 
 
 deliverymanRouter.get("/auth",function(req, res){
 
-    MongoClient.connect(connectionUrl, config, function(error, Client){
-        if(error){
-            console.log(error);
-        }else{
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function(error, Client){
+    //     if(error){
+    //         console.log(error);
+    //     }else{
             let db = Client.db("deliveryman");
             let collec = db.collection("data");
 
@@ -152,8 +156,8 @@ deliverymanRouter.get("/auth",function(req, res){
                     }
                 });
     
-        }
-    });
+    //     }
+    // });
 
 
 })

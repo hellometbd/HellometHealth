@@ -10,13 +10,14 @@ var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.
 
 medicineRouter.post("/", function (req, res) {
 
-    MongoClient.connect(connectionUrl, config, function (error, Client) {
-        if (error) {
-            console.log(error); 
-            // console.log("uploading products meta_data to MongoDB has Failed: error: " + error);
-            // res.json({ message: "Medicine upload Failed" })
-            // res.end();
-        } else {
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function (error, Client) {
+    //     if (error) {
+    //         console.log(error); 
+    //         // console.log("uploading products meta_data to MongoDB has Failed: error: " + error);
+    //         // res.json({ message: "Medicine upload Failed" })
+    //         // res.end();
+    //     } else {
             let db_medicine = Client.db("medicine");
 
             //uploading products meta_data....
@@ -41,16 +42,16 @@ medicineRouter.post("/", function (req, res) {
                     res.end();
                 }
             })
-        }
-    });
+    //     }
+    // });
 });
 
 medicineRouter.get('/', function(req, res){
-
-    MongoClient.connect(connectionUrl, config, function(error, Client){
-        if(error){
-            console.log(error);
-        }else{
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function(error, Client){
+    //     if(error){
+    //         console.log(error);
+    //     }else{
             let db = Client.db("medicine");
             let collec = db.collection("meta_data");
             var medicineId = req.query.id;
@@ -76,8 +77,8 @@ medicineRouter.get('/', function(req, res){
                     }
                 })
             }
-        }
-    })
+    //     }
+    // })
 
 })
 

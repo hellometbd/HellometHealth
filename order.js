@@ -9,10 +9,11 @@ var config = { useUnifiedTopology: true };
 var connectionUrl = "mongodb+srv://hellomethealth:hellomethealth@cluster0.vrnxz.mongodb.net?retryWrites=true&w=majority";
 
 orderRouter.post("/", function (req, res) {
-    MongoClient.connect(connectionUrl, config, function (error, Client) {
-        if (error) {
-            console.log(error);
-        } else {
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function (error, Client) {
+    //     if (error) {
+    //         console.log(error);
+    //     } else {
             let dbOrder = Client.db("order");
             let collecOrder = dbOrder.collection("data");
             const { pharmacy_id, pharmacy_name, pharmacy_address, pharmacy_phone_number, user_id, pharmacy_lat, pharmacy_lng,
@@ -69,16 +70,18 @@ orderRouter.post("/", function (req, res) {
                     res.end();
                 }
             })
-        }
-    });
+    //     }
+    // });
 })
 
 //Get Specefic Data...
 orderRouter.get("/", function (req, res) {
-    MongoClient.connect(connectionUrl, config, function (error, Client) {
-        if (error) {
-            sendError(res, error);
-        } else {
+    
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function (error, Client) {
+    //     if (error) {
+    //         sendError(res, error);
+    //     } else {
             const dbOrder = Client.db("order");
             const collecOrder = dbOrder.collection("data");
             var { id, user_phone_number, pharmacy_id, status, deliveryman_phone_number } = req.query;
@@ -125,8 +128,8 @@ orderRouter.get("/", function (req, res) {
             } else {
                 notFoundException(res, "Nothing Found!");
             }
-        }
-    });
+    //     }
+    // });
 })
 
 
@@ -134,10 +137,11 @@ orderRouter.get("/", function (req, res) {
 //Get All Data...
 orderRouter.get("/all", function (req, res) {
 
-    MongoClient.connect(connectionUrl, config, function (error, Client) {
-        if (error) {
-            sendError(res, error);
-        } else {
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function (error, Client) {
+    //     if (error) {
+    //         sendError(res, error);
+    //     } else {
             let dbOrder = Client.db("order");
             let collecOrder = dbOrder.collection("data");
             var query = {};
@@ -170,16 +174,17 @@ orderRouter.get("/all", function (req, res) {
             else {
                 findDataArrayThenSend(res, collecOrder, query);
             }
-        }
-    });
+    //     }
+    // });
 })
 
 //Filter Order by Date Range...
 orderRouter.get("/range", function (req, res) {
-    MongoClient.connect(connectionUrl, config, function (error, Client) {
-        if (error) {
-            sendError(res, error);
-        } else {
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function (error, Client) {
+    //     if (error) {
+    //         sendError(res, error);
+    //     } else {
             let dbOrder = Client.db("order");
             let collecOrder = dbOrder.collection("data");
 
@@ -220,16 +225,17 @@ orderRouter.get("/range", function (req, res) {
                     }
                 }
             })
-        }
-    });
+    //     }
+    // });
 })
 
 //Update Order By  ID...
 orderRouter.patch("/:id", function (req, res) {
-    MongoClient.connect(connectionUrl, config, function (error, Client) {
-        if (error) {
-            sendError(res, error);
-        } else {
+    var Client = mongoUtil.getMongoClient();
+    // MongoClient.connect(connectionUrl, config, function (error, Client) {
+    //     if (error) {
+    //         sendError(res, error);
+    //     } else {
             let dbOrder = Client.db("order");
             let collecOrder = dbOrder.collection("data");
             let updatedData = req.body;
@@ -251,8 +257,8 @@ orderRouter.patch("/:id", function (req, res) {
                     res.end();
                 }
             })
-        }
-    });
+    //     }
+    // });
 })
 
 
